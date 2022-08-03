@@ -1,10 +1,14 @@
 
 #include "Walnut/Application.h"
 #include "Walnut/Image.h"
+#include "forms/settings.hpp"
 
 class WaveFunctionCollapseLayer : public Walnut::Layer {
 public:
-  virtual void OnUIRender() override {}
+  virtual void OnUIRender() override { _settingsForm.Draw(); }
+
+private:
+  SettingsVisualizer _settingsForm;
 };
 
 Walnut::Application *Walnut::CreateApplication(int argc, char **argv) {
