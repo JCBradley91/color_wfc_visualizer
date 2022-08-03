@@ -19,21 +19,21 @@ struct ColorTile {
     if (lhs == rhs) {
       return 0;
     }
-    static uint8_t comparator = 35;
-    if (std::abs(lhs.r - rhs.r) > comparator) {
+    if (std::abs(lhs.r - rhs.r) > Comparator) {
       return 2;
     }
-    if (std::abs(lhs.g - rhs.g) > comparator) {
+    if (std::abs(lhs.g - rhs.g) > Comparator) {
       return 2;
     }
-    if (std::abs(lhs.b - rhs.b) > comparator) {
+    if (std::abs(lhs.b - rhs.b) > Comparator) {
       return 2;
     }
-    if (std::abs(lhs.a - rhs.a) > comparator) {
+    if (std::abs(lhs.a - rhs.a) > Comparator) {
       return 2;
     }
     return 1;
   }
+  inline static uint8_t Comparator = (255 / 25) + 1;
 };
 
 #endif /* COLOR_TILE_HPP */
