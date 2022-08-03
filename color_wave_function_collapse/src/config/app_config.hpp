@@ -10,6 +10,7 @@ struct AppConfig {
   bool IsShouldStep = false;
   bool IsShouldRecreateMap = false;
   uint8_t ColorTileDrawSize = 10U;
+  uint8_t ColorFragmentPossibilities = 8;
   NextObservationMethod ObservationMethod =
     NextObservationMethod::LowestEntropyRandom;
   Position WfcSize = {40, 40};

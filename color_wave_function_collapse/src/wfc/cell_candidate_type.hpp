@@ -16,16 +16,14 @@
 
 template <typename T> class CellCandidateType : public CellCandidate {
 public:
-  inline CellCandidateType(Position position, std::vector<T> possibleValues)
-      : CellCandidate(position) {
-    auto begin = possibleValues.begin();
-    auto end = possibleValues.end();
-    if (this->_defaultPossibilities.size() != possibleValues.size()) {
-      this->_defaultPossibilities.clear();
-      this->_defaultPossibilities.resize(possibleValues.size());
-      std::copy(begin, end, this->_defaultPossibilities.begin());
+  inline CellCandidateType(Position position) : CellCandidate(position) {
+    this->_possibleValues.resize(this->_defaultPossibilities.size());
+    auto beg = this->_possibleValues.begin();
+    uint64_t index = 0;
+    while (beg != this->_possibleValues.end()) {
+      *beg = &this->_defaultPossibilities[index++];
+      beg++;
     }
-    this->RebuildPossibilities();
   }
   inline ~CellCandidateType<T>() {}
   virtual bool CanBeNeighborsWithValue(uint8_t adjacencyIndex, T *value) = 0;
@@ -101,6 +99,10 @@ public:
   inline void HandleOnSettling() override {
     // do nothing
   }
+  inline static void SetDefaultPossibilities(
+    const std::vector<T> &possibilities) {
+    CellCandidateType<T>::_defaultPossibilities = possibilities;
+  }
 
 protected:
   inline static std::vector<T> _defaultPossibilities;
@@ -109,16 +111,6 @@ protected:
 
 private:
   std::stack<TYPENAME_CNT_P_ITERATOR_PAIR(T)> _toRemoveStack;
-  inline void RebuildPossibilities() {
-    this->_possibleValues.clear();
-    this->_possibleValues.resize(this->_defaultPossibilities.size());
-    auto beg = this->_possibleValues.begin();
-    uint64_t index = 0;
-    while (beg != this->_possibleValues.end()) {
-      *beg = &this->_defaultPossibilities[index++];
-      beg++;
-    }
-  }
 };
 
 #endif /* CELL_CANDIDATE_TYPE_HPP */

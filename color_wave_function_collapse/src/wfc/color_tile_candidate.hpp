@@ -7,9 +7,8 @@
 
 template <typename T> class TileCandidate : public CellCandidateType<T> {
 public:
-  inline TileCandidate<T>(
-    Position position, std::vector<T> defaultPossibilities)
-      : CellCandidateType<T>(position, defaultPossibilities) {}
+  explicit inline TileCandidate<T>(Position position)
+      : CellCandidateType<T>(position) {}
   inline ~TileCandidate<T>() {}
   inline bool CanBeNeighborsWithValue(
     uint8_t adjacencyIndex, T *value) override {
@@ -30,9 +29,8 @@ public:
 
 class ColorTileCandidate : public TileCandidate<ColorTile> {
 public:
-  inline ColorTileCandidate(
-    Position position, std::vector<ColorTile> defaultPossibilities)
-      : TileCandidate<ColorTile>(position, defaultPossibilities) {}
+  explicit inline ColorTileCandidate(Position position)
+      : TileCandidate<ColorTile>(position) {}
 };
 
 #endif /* COLOR_TILE_CANDIDATE_HPP */
