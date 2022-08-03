@@ -16,28 +16,8 @@ WaveFunctionCollapse::WaveFunctionCollapse(const Position &maxPosition,
 
   this->_rand.seed(seed);
 
-  Position pos;
-  this->RecursiveBuildBaseGrid(pos);
-  for (auto &cg : this->_candidateGrid) {
-    uint64_t adjacentKey;
-    Position adjacentPosition;
-    for (size_t i = 0; i < DIMENSION_COUNT; i++) {
-      if (cg.second->GetPosition().pos[i] > 0) {
-        adjacentPosition = Position(cg.second->GetPosition());
-        adjacentPosition.pos[i]--;
-        adjacentKey = Position::ToHash(adjacentPosition);
-        cg.second->SetNeighborBefore(i, this->_candidateGrid.at(adjacentKey));
-      }
-      if (cg.second->GetPosition().pos[i] < this->_maxPosition.pos[i]) {
-        adjacentPosition = Position(cg.second->GetPosition());
-        adjacentPosition.pos[i]++;
-        adjacentKey = Position::ToHash(adjacentPosition);
-        cg.second->SetNeighborAfter(i, this->_candidateGrid.at(adjacentKey));
-      }
-    }
-  }
-
   if (!isDeferredExecution) {
+    this->RecursiveBuildBaseGridWrapper();
     this->Run();
   }
 }
@@ -53,6 +33,9 @@ const std::map<uint64_t, CellCandidate *> &WaveFunctionCollapse::GetGrid() {
 }
 
 bool WaveFunctionCollapse::GetIsComplete() {
+  if (this->_hasBuiltGrid == false) {
+    return false;
+  }
   auto result =
     std::find_if(this->_candidateGrid.begin(), this->_candidateGrid.end(),
       [](const auto &x) { return x.second->IsObserved() == false; });
@@ -94,6 +77,30 @@ bool WaveFunctionCollapse::RecursiveBuildBaseGrid(
   return true;
 }
 
+void WaveFunctionCollapse::RecursiveBuildBaseGridWrapper(
+  Position position, uint64_t positionKey, int16_t index) {
+  this->RecursiveBuildBaseGrid(position, positionKey, index);
+  for (auto &cg : this->_candidateGrid) {
+    uint64_t adjacentKey;
+    Position adjacentPosition;
+    for (size_t i = 0; i < DIMENSION_COUNT; i++) {
+      if (cg.second->GetPosition().pos[i] > 0) {
+        adjacentPosition = Position(cg.second->GetPosition());
+        adjacentPosition.pos[i]--;
+        adjacentKey = Position::ToHash(adjacentPosition);
+        cg.second->SetNeighborBefore(i, this->_candidateGrid.at(adjacentKey));
+      }
+      if (cg.second->GetPosition().pos[i] < this->_maxPosition.pos[i]) {
+        adjacentPosition = Position(cg.second->GetPosition());
+        adjacentPosition.pos[i]++;
+        adjacentKey = Position::ToHash(adjacentPosition);
+        cg.second->SetNeighborAfter(i, this->_candidateGrid.at(adjacentKey));
+      }
+    }
+  }
+  this->_hasBuiltGrid = true;
+}
+
 void WaveFunctionCollapse::RunToCompletion() {
   if (!this->GetIsComplete()) {
     this->Run();
@@ -101,6 +108,9 @@ void WaveFunctionCollapse::RunToCompletion() {
 }
 
 void WaveFunctionCollapse::Run(bool runOnce) {
+  if (!this->_hasBuiltGrid) {
+    this->RecursiveBuildBaseGridWrapper();
+  }
   uint64_t nextEntropy = std::numeric_limits<uint64_t>().max();
   std::list<CellCandidate *> nextEntropyCandidates;
   CellCandidate *cellCandidate = nullptr;
@@ -193,7 +203,10 @@ void WaveFunctionCollapse::Run(bool runOnce) {
     //
     // reset and keep running
     //
-    if (runOnce) {
+    if (runOnce || this->_isStopping) {
+      if (this->_isStopping == true) {
+        this->_isStopping = false;
+      }
       break;
     }
     nextEntropy = std::numeric_limits<uint64_t>().max();
@@ -203,3 +216,5 @@ void WaveFunctionCollapse::Run(bool runOnce) {
 }
 
 void WaveFunctionCollapse::Step() { this->Run(true); }
+
+void WaveFunctionCollapse::Stop() { this->_isStopping = true; }

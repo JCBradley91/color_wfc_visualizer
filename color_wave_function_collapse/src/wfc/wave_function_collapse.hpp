@@ -61,16 +61,21 @@ public:
   const Position GetMaxPosition();
   void RunToCompletion();
   void Step();
+  void Stop();
 
 protected:
+  std::atomic<bool> _isStopping = false;
+  std::atomic<bool> _hasBuiltGrid = false;
   const NextObservationMethod _nextObservationMethod;
   std::mt19937 _rand;
   PositionRules _positionRules{};
   Position _maxPosition;
   std::map<uint64_t, CellCandidate *> _candidateGrid;
   std::function<CellCandidate *(Position pos)> _cellCandidateCTOR;
-  bool RecursiveBuildBaseGrid(
-    Position position, uint64_t positionKey = 0ULL, int16_t index = 0);
+  bool RecursiveBuildBaseGrid(Position position = Position(),
+    uint64_t positionKey = 0ULL, int16_t index = 0);
+  void RecursiveBuildBaseGridWrapper(Position position = Position(),
+    uint64_t positionKey = 0ULL, int16_t index = 0);
   void Run(bool runOnce = false);
 
 private:
