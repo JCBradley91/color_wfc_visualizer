@@ -10,6 +10,8 @@ add_executable(colorwavefunctioncollapse
   src/forms/settings.hpp
   src/forms/visualizer.cpp
   src/forms/visualizer.hpp
+  src/lib/thread_pool.cpp
+  src/lib/thread_pool.hpp
   src/wfc/cell_candidate_type.hpp
   src/wfc/cell_candidate.hpp
   src/wfc/color_tile_candidate.hpp
