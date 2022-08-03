@@ -20,8 +20,9 @@ void SettingsVisualizer::Draw(AppConfig &appConfig) {
 
   static bool sizeX_isLocked = true;
   static bool sizeY_isLocked = true;
-  uint16_t minSliderValue = 0;
+  uint16_t minSliderValue = 1;
   uint16_t maxSliderValue = (1 << DIMENSION_DISTANCE_BIT_SHIFT) - 1;
+  uint16_t realisticMaxSliderValue = 100;
 
   ImGui::InputScalarN("Seed", ImGuiDataType_U64, &appConfig.Seed, 1);
 
@@ -48,26 +49,52 @@ void SettingsVisualizer::Draw(AppConfig &appConfig) {
     IM_ARRAYSIZE(obsMethods));
   appConfig.ObservationMethod = obsMethods[obsMethodIndex];
 
+  static bool enableSillySize = false;
+  ImGui::Checkbox("Allow Silly Grid Size", &enableSillySize);
+  if (enableSillySize == false) {
+    if (appConfig.WfcSize.pos[0] > realisticMaxSliderValue) {
+      appConfig.WfcSize.pos[0] = realisticMaxSliderValue;
+    }
+    if (appConfig.WfcSize.pos[1] > realisticMaxSliderValue) {
+      appConfig.WfcSize.pos[1] = realisticMaxSliderValue;
+    }
+  }
+
   ImGui::Checkbox("Lock X", &sizeX_isLocked);
   ImGui::SameLine();
   ImGui::BeginDisabled(sizeX_isLocked);
-  ImGui::SliderScalar("sizeX", ImGuiDataType_U16, &appConfig.WfcSize.pos[0],
-    &minSliderValue, &maxSliderValue);
+  ImGui::SliderScalar("Size X", ImGuiDataType_U16, &appConfig.WfcSize.pos[0],
+    &minSliderValue,
+    enableSillySize ? &maxSliderValue : &realisticMaxSliderValue);
   ImGui::EndDisabled();
 
   ImGui::Checkbox("Lock Y", &sizeY_isLocked);
   ImGui::SameLine();
   ImGui::BeginDisabled(sizeY_isLocked);
-  ImGui::SliderScalar("sizeY", ImGuiDataType_U16, &appConfig.WfcSize.pos[1],
-    &minSliderValue, &maxSliderValue);
+  ImGui::SliderScalar("Size Y", ImGuiDataType_U16, &appConfig.WfcSize.pos[1],
+    &minSliderValue,
+    enableSillySize ? &maxSliderValue : &realisticMaxSliderValue);
   ImGui::EndDisabled();
 
   ImGui::Separator();
 
-  const uint8_t min = 1U;
+  const uint8_t min = 2U;
   const uint8_t max = 255U;
-  ImGui::SliderScalar(
-    "dotSize", ImGuiDataType_U8, &appConfig.ColorTileDrawSize, &min, &max);
+  ImGui::SliderScalar("# of R,G,B Slices", ImGuiDataType_U8,
+    &appConfig.ColorFragmentPossibilities, &min, &max);
+  uint64_t totalPossibleColors =
+    std::pow(appConfig.ColorFragmentPossibilities + 1, 3);
+  std::string totalCount(
+    " - Total Possible Combinations ((slices + 1) ^ 3) : " +
+    std::to_string(totalPossibleColors));
+  ImGui::Text("%s", totalCount.c_str());
+
+  ImGui::Separator();
+
+  const uint8_t dotSizeMin = 1U;
+  const uint8_t dotSizeMax = 255U;
+  ImGui::SliderScalar("Dot Size", ImGuiDataType_U8,
+    &appConfig.ColorTileDrawSize, &dotSizeMin, &dotSizeMax);
 
   ImGui::Separator();
 
@@ -89,6 +116,14 @@ void SettingsVisualizer::Draw(AppConfig &appConfig) {
   if (ImGui::Button("Apply")) {
     appConfig.IsShouldRecreateMap = true;
   }
+  ImGui::SameLine();
+  uint64_t memSizePerCell = totalPossibleColors * 64;
+  uint64_t cellCount = appConfig.WfcSize.pos[0] * appConfig.WfcSize.pos[1];
+  float memoryEstimate =
+    (cellCount * memSizePerCell) / 1024.f / 1024.f / 1024.f;
+  std::string estimatedSizeText(
+    "Estimated Memory Size: " + std::to_string(memoryEstimate) + "Gb");
+  ImGui::Text("%s", estimatedSizeText.c_str());
 
   if (appConfig.IsManualStep) {
     if (ImGui::Button("Step")) {
