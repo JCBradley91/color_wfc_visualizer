@@ -13,9 +13,9 @@ private:
 
 Walnut::Application *Walnut::CreateApplication(int argc, char **argv) {
   Walnut::ApplicationSpecification spec{
-      .Name = "WFC - Color",
-      .Width = 1600,
-      .Height = 900,
+    .Name = "WFC - Color",
+    .Width = 1600,
+    .Height = 900,
   };
 
   Walnut::Application *app = new Walnut::Application(spec);
