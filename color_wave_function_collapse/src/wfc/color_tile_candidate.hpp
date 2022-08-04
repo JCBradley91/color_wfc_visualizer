@@ -31,6 +31,43 @@ class ColorTileCandidate : public TileCandidate<ColorTile> {
 public:
   explicit inline ColorTileCandidate(Position position)
       : TileCandidate<ColorTile>(position) {}
+  inline const ColorTile &GetAverageColor() {
+    if (this->_isObserved) {
+      return *this->_value;
+    }
+    return this->avgColor;
+  }
+  inline void OnHandledCollapsedNeighbor() override {
+    // rebuild average color
+    if (this->_possibleValues.size() != this->_defaultPossibilities.size()) {
+      uint64_t counter = 0;
+      uint64_t rSum = 0ULL, gSum = 0ULL, bSum = 0ULL;
+      auto colorPossibility = this->_possibleValues.begin();
+      while (colorPossibility != this->_possibleValues.end()) {
+        auto possibility = *colorPossibility;
+        rSum += static_cast<uint64_t>(possibility->r * possibility->r);
+        gSum += static_cast<uint64_t>(possibility->g * possibility->g);
+        bSum += static_cast<uint64_t>(possibility->b * possibility->b);
+        counter++;
+        std::advance(colorPossibility, 1);
+      }
+      auto alphaRatio = counter / (float)this->_defaultPossibilities.size();
+      this->avgColor = ColorTile{
+        .r = static_cast<int16_t>(std::sqrt(rSum / (float)counter)),
+        .g = static_cast<int16_t>(std::sqrt(gSum / (float)counter)),
+        .b = static_cast<int16_t>(std::sqrt(bSum / (float)counter)),
+        .a = static_cast<int16_t>(255 - (alphaRatio * 255)),
+      };
+    }
+  }
+
+private:
+  ColorTile avgColor = ColorTile{
+    .r = 255,
+    .g = 255,
+    .b = 255,
+    .a = 0,
+  };
 };
 
 #endif /* COLOR_TILE_CANDIDATE_HPP */
