@@ -87,6 +87,7 @@ public:
     }
     uint64_t afterCount = this->_possibleValues.size();
     this->_isCollapsing = beforeCount != afterCount;
+    this->OnHandledCollapsedNeighbor();
     return beforeCount == afterCount;
   }
   inline void HandleObserved(uint64_t indexToObserve) override {
@@ -98,6 +99,9 @@ public:
   }
   virtual inline void HandleOnSettling() override {
     // do nothing
+  }
+  virtual inline void OnHandledCollapsedNeighbor() {
+    // do nothing;
   }
   inline static void SetDefaultPossibilities(
     const std::vector<T> &possibilities) {
