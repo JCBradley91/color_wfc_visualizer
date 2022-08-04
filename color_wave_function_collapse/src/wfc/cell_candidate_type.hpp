@@ -96,7 +96,7 @@ public:
     this->_possibleValues.clear();
     this->_isObserved = true;
   }
-  inline void HandleOnSettling() override {
+  virtual inline void HandleOnSettling() override {
     // do nothing
   }
   inline static void SetDefaultPossibilities(

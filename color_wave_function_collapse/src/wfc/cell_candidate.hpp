@@ -25,7 +25,10 @@ public:
     this->HandleObserved(dist(rand));
     this->CollapseNeighbors();
   }
-  inline void Settle() { this->_isCollapsing = false; }
+  inline void Settle() {
+    this->_isCollapsing = false;
+    this->HandleOnSettling();
+  }
   inline void SetNeighborAfter(uint8_t dimensionIndex, CellCandidate *cell) {
     this->SetAdjacency(dimensionIndex * 2U + 1U, cell);
   }
