@@ -10,9 +10,17 @@ void ColorWFCVisualizer::Draw(VisualizationType displayType,
   std::vector<std::vector<ColorTileCandidate *>> &grid, uint8_t tileDrawSize,
   uint32_t totalColorPossibilities) {
 
+  if (displayType == VisualizationType::Average) {
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 1));
+  }
+
   std::string title(
     "WFC Block Visualizer #" + std::to_string(this->_counterIndex));
   ImGui::Begin(title.c_str());
+
+  if (displayType == VisualizationType::Average) {
+    ImGui::PopStyleColor(1);
+  }
 
   auto drawList = ImGui::GetWindowDrawList();
 
