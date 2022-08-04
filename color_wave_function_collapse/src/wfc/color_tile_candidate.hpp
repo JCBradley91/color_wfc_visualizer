@@ -16,14 +16,18 @@ public:
       auto diff = std::abs(*this->_value - *value);
       return diff <= 1;
     }
-    auto pIT = this->_possibleValues.begin();
-    while (pIT != this->_possibleValues.end()) {
-      if (std::abs(**pIT - *value) <= 1) {
-        return true;
+    if (!this->_hasBeenTouched) {
+      return true;
+    } else {
+      auto pIT = this->_possibleValues.begin();
+      while (pIT != this->_possibleValues.end()) {
+        if (std::abs(**pIT - *value) <= 1) {
+          return true;
+        }
+        pIT++;
       }
-      pIT++;
+      return false;
     }
-    return false;
   }
 };
 

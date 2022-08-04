@@ -38,6 +38,7 @@ public:
 
 protected:
   bool _isObserved = false;
+  bool _hasBeenTouched = false;
   bool _isCollapsing = false;
   Position _position;
   inline void CollapseNeighbors() {
