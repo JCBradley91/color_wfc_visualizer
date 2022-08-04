@@ -94,7 +94,6 @@ protected:
   /*!
    * Called when a neighbor of this cell was modified
    *
-   * @param isShuttingDown Boolean to aid in thread shutdown
    * @returns False if the entropy of this cell was modified
    */
   virtual bool HandleNeighborCollapsed() = 0;
