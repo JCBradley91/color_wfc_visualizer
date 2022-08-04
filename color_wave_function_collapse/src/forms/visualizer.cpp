@@ -22,27 +22,27 @@ void ColorWFCVisualizer::Draw(VisualizationType displayType,
       if (ctc == nullptr) {
         continue;
       }
-      ColorTile *ct = ctc->GetValue();
-      auto entropyRatio =
-        grid.at(i).at(k)->GetEntropy() / (float)totalColorPossibilities;
+
       ImVec2 p = ImGui::GetCursorScreenPos();
       ImVec2 markerMin =
         ImVec2(p.x + (i * tileDrawSize), p.y + (k * tileDrawSize));
       ImVec2 markerMax =
-        ImVec2(markerMin.x + tileDrawSize + 1.0f, markerMin.y + tileDrawSize);
+        ImVec2(markerMin.x + tileDrawSize, markerMin.y + tileDrawSize);
+
       ImVec4 color;
-      switch (displayType) {
-      case VisualizationType::Color:
+      ColorTile *ct = ctc->GetValue();
+      if (displayType == VisualizationType::Color) {
         if (ct != nullptr) {
           color =
             ImVec4(ct->r / 255.f, ct->g / 255.f, ct->b / 255.f, ct->a / 255.f);
         }
-        break;
-      case VisualizationType::Entropy:
+      } else if (displayType == VisualizationType::Entropy) {
+        auto entropyRatio = ctc->GetEntropy() / (float)totalColorPossibilities;
         color = ImVec4(entropyRatio, entropyRatio, entropyRatio, 1.f);
-        break;
-      case VisualizationType::None:
-        break;
+      } else if (displayType == VisualizationType::Average) {
+        auto avgColor = ctc->GetAverageColor();
+        color = ImVec4(avgColor.r / 255.f, avgColor.g / 255.f,
+          avgColor.b / 255.f, avgColor.a / 255.f);
       }
       drawList->AddRectFilled(markerMin, markerMax, ImColor(color));
     }

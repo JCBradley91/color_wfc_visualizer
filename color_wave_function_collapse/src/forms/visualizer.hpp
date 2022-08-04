@@ -8,6 +8,7 @@ enum struct VisualizationType {
   None,
   Color,
   Entropy,
+  Average,
 };
 
 class ColorWFCVisualizer {
