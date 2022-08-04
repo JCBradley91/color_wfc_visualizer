@@ -35,13 +35,14 @@ public:
       return;
     }
 
-    if (this->_wfcCanBeDrawn == true) {
+    std::vector<std::vector<ColorTileCandidate *>> grid;
 
+    if (this->_wfcCanBeDrawn == true) {
       auto maxPosition = this->_wfc.GetMaxPosition();
       auto gridMap(this->_wfc.GetGrid());
-      std::vector<std::vector<ColorTileCandidate *>> grid(
-        maxPosition.pos[0] + 1,
-        std::vector<ColorTileCandidate *>(maxPosition.pos[1] + 1, nullptr));
+      grid =
+        std::vector<std::vector<ColorTileCandidate *>>(maxPosition.pos[0] + 1,
+          std::vector<ColorTileCandidate *>(maxPosition.pos[1] + 1, nullptr));
 
       auto ctc = gridMap.begin();
       while (ctc != gridMap.end()) {
@@ -50,13 +51,20 @@ public:
         grid.at(x).at(y) = static_cast<ColorTileCandidate *>(ctc->second);
         std::advance(ctc, 1);
       }
+    } else {
+      grid = std::vector<std::vector<ColorTileCandidate *>>(
+        1, std::vector<ColorTileCandidate *>(1, nullptr));
+    }
 
-      _colorGrid.Draw(
-        VisualizationType::Color, grid, _appConfig.ColorTileDrawSize);
-      _entropyGrid.Draw(VisualizationType::Entropy, grid,
-        _appConfig.ColorTileDrawSize,
-        std::pow(this->_appConfig.ColorFragmentPossibilities + 1, 3));
+    _colorGrid.Draw(
+      VisualizationType::Color, grid, _appConfig.ColorTileDrawSize);
+    _entropyGrid.Draw(VisualizationType::Entropy, grid,
+      _appConfig.ColorTileDrawSize,
+      std::pow(this->_appConfig.ColorFragmentPossibilities + 1, 3));
+    _avgColorGrid.Draw(
+      VisualizationType::Average, grid, _appConfig.ColorTileDrawSize);
 
+    if (this->_wfcCanBeDrawn == true) {
       if (this->_appConfig.IsManualStep) {
         if (this->_wfcStarted) {
           this->StopWFC();
@@ -69,14 +77,6 @@ public:
         this->RunWFC();
         this->_wfcStarted = true;
       }
-
-    } else {
-      static std::vector<std::vector<ColorTileCandidate *>> grid(
-        1, std::vector<ColorTileCandidate *>(1, nullptr));
-      _colorGrid.Draw(
-        VisualizationType::Color, grid, _appConfig.ColorTileDrawSize);
-      _entropyGrid.Draw(
-        VisualizationType::Entropy, grid, _appConfig.ColorTileDrawSize);
     }
   }
   void RunWFC() {
@@ -99,6 +99,7 @@ private:
   SettingsVisualizer _settingsForm;
   ColorWFCVisualizer _colorGrid;
   ColorWFCVisualizer _entropyGrid;
+  ColorWFCVisualizer _avgColorGrid;
   WaveFunctionCollapse _wfc;
   std::vector<ColorTile> _candidates;
   ThreadPool _threadPool;
