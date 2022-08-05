@@ -2,6 +2,7 @@
 #include "Walnut/Application.h"
 #include "Walnut/Image.h"
 #include "config/app_config.hpp"
+#include "forms/cell_details.hpp"
 #include "forms/settings.hpp"
 #include "forms/visualizer.hpp"
 #include "lib/thread_pool.hpp"
@@ -56,13 +57,17 @@ public:
         1, std::vector<ColorTileCandidate *>(1, nullptr));
     }
 
-    _colorGrid.Draw(
-      VisualizationType::Color, grid, _appConfig.ColorTileDrawSize);
+    ColorTileCandidate *hoveredCandidate = nullptr;
+
+    _colorGrid.Draw(VisualizationType::Color, grid,
+      _appConfig.ColorTileDrawSize, hoveredCandidate);
     _entropyGrid.Draw(VisualizationType::Entropy, grid,
-      _appConfig.ColorTileDrawSize,
+      _appConfig.ColorTileDrawSize, hoveredCandidate,
       std::pow(this->_appConfig.ColorFragmentPossibilities + 1, 3));
-    _avgColorGrid.Draw(
-      VisualizationType::Average, grid, _appConfig.ColorTileDrawSize);
+    _avgColorGrid.Draw(VisualizationType::Average, grid,
+      _appConfig.ColorTileDrawSize, hoveredCandidate);
+
+    _cellDetailsVisualizer.Draw(hoveredCandidate);
 
     if (this->_wfcCanBeDrawn == true) {
       if (this->_appConfig.IsManualStep) {
@@ -100,6 +105,7 @@ private:
   ColorWFCVisualizer _colorGrid;
   ColorWFCVisualizer _entropyGrid;
   ColorWFCVisualizer _avgColorGrid;
+  CellDetailsVisualizer _cellDetailsVisualizer;
   WaveFunctionCollapse _wfc;
   std::vector<ColorTile> _candidates;
   ThreadPool _threadPool;

@@ -8,7 +8,7 @@ ColorWFCVisualizer::~ColorWFCVisualizer() {}
 
 void ColorWFCVisualizer::Draw(VisualizationType displayType,
   std::vector<std::vector<ColorTileCandidate *>> &grid, uint8_t tileDrawSize,
-  uint32_t totalColorPossibilities) {
+  ColorTileCandidate *&hoveredCandidate, uint32_t totalColorPossibilities) {
 
   if (displayType == VisualizationType::Average) {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 1));
@@ -37,6 +37,10 @@ void ColorWFCVisualizer::Draw(VisualizationType displayType,
         ImVec2(p.x + (i * tileDrawSize), p.y + (k * tileDrawSize));
       ImVec2 markerMax =
         ImVec2(markerMin.x + tileDrawSize, markerMin.y + tileDrawSize);
+
+      if (ImGui::IsMouseHoveringRect(markerMin, markerMax)) {
+        hoveredCandidate = ctc;
+      }
 
       ImVec4 color;
       ColorTile *ct = ctc->GetValue();

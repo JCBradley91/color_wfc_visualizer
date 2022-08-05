@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(colorwavefunctioncollapse
   src/color_wave_function_collapse.cpp
   src/config/app_config.hpp
+  src/forms/cell_details.cpp
+  src/forms/cell_details.hpp
   src/forms/settings.cpp
   src/forms/settings.hpp
   src/forms/visualizer.cpp

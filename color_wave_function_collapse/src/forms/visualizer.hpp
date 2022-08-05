@@ -17,6 +17,7 @@ public:
   ~ColorWFCVisualizer();
   void Draw(VisualizationType displayType,
     std::vector<std::vector<ColorTileCandidate *>> &grid, uint8_t tileDrawSize,
+    ColorTileCandidate *&hoveredCandidate,
     uint32_t totalColorPossibilities = 1);
 
 private:
