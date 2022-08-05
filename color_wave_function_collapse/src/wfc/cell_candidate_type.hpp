@@ -48,7 +48,7 @@ public:
     auto valIT = this->_possibleValues.begin();
     while (valIT != this->_possibleValues.end()) {
       bool valid = true;
-      for (size_t i = 0; i < DIMENSION_COUNT * 2; i++) {
+      for (size_t i = 0; i < NEIGHBOR_COUNT; i++) {
         CellCandidateType<T> *mcc =
           static_cast<CellCandidateType<T> *>(this->GetAdjacency(i));
         if (mcc == nullptr) {

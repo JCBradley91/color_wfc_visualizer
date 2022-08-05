@@ -6,6 +6,7 @@
 
 // clang-format off
 #define DIMENSION_COUNT 2ULL
+#define NEIGHBOR_COUNT DIMENSION_COUNT * 2ULL
 #define EMPTY_DIMENSION { 0U, 0U, }
 #define EMPTY_ADJACENCIES { nullptr, nullptr, nullptr, nullptr, }
 #define DIMENSION_DISTANCE_BIT_SHIFT 12ULL

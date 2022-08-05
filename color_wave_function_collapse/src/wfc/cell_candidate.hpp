@@ -55,7 +55,7 @@ protected:
     collapsedNeighbors.reserve(1000);
     do {
       neighbors.clear();
-      for (size_t i = 0; i < DIMENSION_COUNT * 2; i++) {
+      for (size_t i = 0; i < NEIGHBOR_COUNT; i++) {
         if (lastCollapsedNeighbors.size() == 0) {
           neighbor = this->GetAdjacency(i);
           if (neighbor != nullptr && neighbor->IsObserved() == false) {
@@ -110,7 +110,7 @@ protected:
       return;
     }
     this->_isCollapsing = false;
-    for (size_t i = 0; i < DIMENSION_COUNT * 2; i++) {
+    for (size_t i = 0; i < NEIGHBOR_COUNT; i++) {
       CellCandidate *neighbor = this->GetAdjacency(i);
       if (neighbor != nullptr && !neighbor->IsObserved()) {
         neighbor->SettleNeighbors();
@@ -122,8 +122,7 @@ private:
   /*!
    * position i is before, i+1 is after
    */
-  std::array<CellCandidate *, DIMENSION_COUNT * 2ULL> _adjacencies =
-    EMPTY_ADJACENCIES;
+  std::array<CellCandidate *, NEIGHBOR_COUNT> _adjacencies = EMPTY_ADJACENCIES;
 };
 
 #endif /* CELL_CANDIDATE_HPP */
