@@ -100,8 +100,8 @@ void SettingsVisualizer::Draw(AppConfig &appConfig) {
 
   if (ImGui::Button("Randomize")) {
     std::mt19937_64 rand;
-    std::uniform_int_distribution<uint16_t> uint16_dist(
-      minSliderValue, maxSliderValue);
+    std::uniform_int_distribution<uint16_t> uint16_dist(minSliderValue,
+      enableSillySize ? maxSliderValue : realisticMaxSliderValue);
     appConfig.Seed =
       std::chrono::steady_clock::now().time_since_epoch().count();
     rand.seed(appConfig.Seed);
