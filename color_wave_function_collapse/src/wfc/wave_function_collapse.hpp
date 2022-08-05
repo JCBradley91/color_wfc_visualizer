@@ -24,23 +24,6 @@ enum struct NextObservationMethod {
   Default = LowestEntropyRandom,
 };
 
-struct ElevationRules {
-  // minimum elevation
-  uint8_t minElevation = 1U;
-  // maximum height
-  uint8_t maxElevation = 12U;
-  // total maximum difference between any two points
-  uint8_t maxDifference = 4U;
-  // total number of differing elevations allowed
-  uint8_t maxElevations = 2U;
-  // minimum number of points for a valid "side"
-  uint8_t minAdjacentElevationPoints = 2U;
-};
-
-struct Elevations {
-  uint8_t top = 0U, right = 0U, bottom = 0U, left = 0U;
-};
-
 struct PositionRules {
   uint16_t maxDistance = 1U << DIMENSION_DISTANCE_BIT_SHIFT;
 };
