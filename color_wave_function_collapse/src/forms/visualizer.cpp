@@ -24,6 +24,8 @@ void ColorWFCVisualizer::Draw(VisualizationType displayType,
 
   auto drawList = ImGui::GetWindowDrawList();
 
+  ImVec2 p = ImGui::GetCursorScreenPos();
+
   for (size_t k = 0; k < grid.at(0).size(); k++) {
     for (size_t i = 0; i < grid.size(); i++) {
       auto ctc = grid.at(i).at(k);
@@ -31,7 +33,6 @@ void ColorWFCVisualizer::Draw(VisualizationType displayType,
         continue;
       }
 
-      ImVec2 p = ImGui::GetCursorScreenPos();
       ImVec2 markerMin =
         ImVec2(p.x + (i * tileDrawSize), p.y + (k * tileDrawSize));
       ImVec2 markerMax =
