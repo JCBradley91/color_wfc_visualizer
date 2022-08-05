@@ -9,11 +9,11 @@ struct AppConfig {
   bool IsManualStep = true;
   bool IsShouldStep = false;
   bool IsShouldRecreateMap = false;
-  uint8_t ColorTileDrawSize = 10U;
-  uint8_t ColorFragmentPossibilities = 8;
+  uint8_t ColorTileDrawSize = 6U;
+  uint8_t ColorFragmentPossibilities = 9;
   NextObservationMethod ObservationMethod =
     NextObservationMethod::LowestEntropyRandom;
-  Position WfcSize = {40, 40};
+  Position WfcSize = {100, 100};
 };
 
 #endif /* APP_CONFIG_HPP */
