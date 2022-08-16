@@ -17,6 +17,8 @@ Walnut is a nifty application framework that implements ImGui via Vulkan and exp
 mkdir build && cd build
 cmake ..
 cmake --build . -jN # N = cores
+cd color_wave_function_collapse
+./colorwavefunctioncollapse # execute
 ```
 
 ## 3rd party libraries
