@@ -8,10 +8,10 @@
 #include <vector>
 
 // clang-format off
-#define CNT_TYPE(T) std::list<T>
-#define CNT_P_TYPE(T) std::list<T *>
-#define TYPENAME_CNT_P_ITERATOR(T) typename CNT_P_TYPE(T)::iterator
-#define TYPENAME_CNT_P_ITERATOR_PAIR(T) std::pair<TYPENAME_CNT_P_ITERATOR(T), TYPENAME_CNT_P_ITERATOR(T)>
+#define CONTAINER_TYPE(T) std::list<T>
+#define CONTAINER_P_TYPE(T) std::list<T *>
+#define TYPENAME_CONTAINER_P_ITERATOR(T) typename CONTAINER_P_TYPE(T)::iterator
+#define TYPENAME_CONTAINER_P_ITERATOR_PAIR(T) std::pair<TYPENAME_CONTAINER_P_ITERATOR(T), TYPENAME_CONTAINER_P_ITERATOR(T)>
 // clang-format on
 
 template <typename T> class CellCandidateType : public CellCandidate {
@@ -43,8 +43,8 @@ public:
     this->_isCollapsing = true;
     uint64_t beforeCount = this->_possibleValues.size();
     bool firstPopulated = false;
-    TYPENAME_CNT_P_ITERATOR(T) tmpStartIT;
-    TYPENAME_CNT_P_ITERATOR(T) tmpEndIT;
+    TYPENAME_CONTAINER_P_ITERATOR(T) tmpStartIT;
+    TYPENAME_CONTAINER_P_ITERATOR(T) tmpEndIT;
     auto valIT = this->_possibleValues.begin();
     while (valIT != this->_possibleValues.end()) {
       bool valid = true;
@@ -78,7 +78,7 @@ public:
     if (firstPopulated == true) {
       _toRemoveStack.emplace(tmpStartIT, tmpEndIT);
     }
-    TYPENAME_CNT_P_ITERATOR_PAIR(T) itPair;
+    TYPENAME_CONTAINER_P_ITERATOR_PAIR(T) itPair;
     while (!this->_toRemoveStack.empty()) {
       itPair = std::move(this->_toRemoveStack.top());
       this->_toRemoveStack.pop();
@@ -110,11 +110,11 @@ public:
 
 protected:
   inline static std::vector<T> _defaultPossibilities;
-  CNT_P_TYPE(T) _possibleValues;
+  CONTAINER_P_TYPE(T) _possibleValues;
   T *_value = nullptr;
 
 private:
-  std::stack<TYPENAME_CNT_P_ITERATOR_PAIR(T)> _toRemoveStack;
+  std::stack<TYPENAME_CONTAINER_P_ITERATOR_PAIR(T)> _toRemoveStack;
 };
 
 #endif /* CELL_CANDIDATE_TYPE_HPP */
